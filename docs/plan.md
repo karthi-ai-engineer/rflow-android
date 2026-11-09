@@ -19,13 +19,16 @@ The decisions so far (the owner's, 2026-11-09):
 |---|---|
 | Repository | `karthi-ai-engineer/rflow-android`, public, MIT; the Rflow name and logo not covered |
 | Android | 10 and newer (API 29+), the first version that lets an app hear what the phone plays |
-| First feature | Rflow Keyboard (voice typing), right after the setup phase |
+| Focus | **Live translation and Meeting mode first** (the owner's correction, 2026-11-09); the keyboard, Translate and the Screen translator come later |
 | Releases | An APK on GitHub Releases first; the Play Store once it's solid |
 | AI | The user's own Google Gemini key, as on Windows; no Rflow server, no account |
 
 ## 2. Each feature on Android
 
-### 2.1 Rflow Keyboard: voice typing in every app
+The first versions are **live translation (2.3, 2.5) and Meeting mode (2.6)**. The other parts are planned here so the
+design fits them, but they come later.
+
+### 2.1 Rflow Keyboard: voice typing in every app (later)
 
 The desktop's Ctrl+Win becomes a keyboard (an Android *input method*). It is the only way an app may type into other
 apps without the Accessibility API (see 4).
@@ -48,7 +51,7 @@ apps without the Accessibility API (see 4).
   message"... the same one-word commands as 2.8.1. The keyboard can read and replace the field's text, so this needs no
   extra permission.
 
-### 2.2 Translate and Text Transform: any text, in any app
+### 2.2 Translate and Text Transform: any text, in any app (later)
 
 - **Select text in any app → the menu shows "Rflow".** Android's text-selection menu lets apps add actions
   (`ACTION_PROCESS_TEXT`). Rflow adds *Translate*, and *Rewrite* (concise, professional, Japanese Teams message,
@@ -57,9 +60,11 @@ apps without the Accessibility API (see 4).
 - **Shared to Rflow:** text shared from any app (the Share button) opens the same sheet.
 - **The app's own Translate tab:** paste or type, detect, translate, swap, as on the desktop's Text tab.
 
-### 2.3 Conversation: two people, two languages, one phone (new)
+### 2.3 Live translation in the room, and Conversation (first)
 
-The phone's biggest edge: in a shop, at a counter, with a colleague who speaks only Japanese.
+The phone's biggest edge: in a meeting room, at a counter, with a colleague who speaks only Japanese. The live translation
+screen is the desktop's Live translation page on a phone: the languages, Start and Stop, the captions growing as people
+speak, Speak the translation, the Cost saver. Conversation is its two-way view:
 
 - **One screen, split in two:** the top half upside down for the person across the table. Each side shows what the other
   said, in their own language.
@@ -70,7 +75,7 @@ The phone's biggest edge: in a shop, at a counter, with a colleague who speaks o
   own voice only). Off: silent captions.
 - **Saved:** the conversation kept on the phone as a transcript, if the user wants (the desktop's "Save transcripts").
 
-### 2.4 Screen translator
+### 2.4 Screen translator (later)
 
 - **Start:** a Quick Settings tile ("Translate screen"), or a small floating button over other apps.
 - **How it works:** Android asks once per session to allow screen capture (`MediaProjection`; Android requires this
@@ -80,16 +85,18 @@ The phone's biggest edge: in a shop, at a counter, with a colleague who speaks o
   only a part.
 - **Privacy:** the picture is never saved; only the text is sent to Gemini.
 
-### 2.5 Live captions for videos
+### 2.5 Live translation of what the phone plays (first)
 
 - What the phone plays (YouTube, a lecture, a podcast) is heard by Rflow (`AudioPlaybackCapture`, Android 10+) and
   translated live by Gemini Live Translate into a floating caption bar above any app, moved and resized with a finger.
 - Apps can forbid this; some do (often paid streaming). Rflow says so when the sound is silent.
 - The same Cost saver as the desktop: silence isn't sent, and it stops by itself when nothing is heard for a while.
 
-### 2.6 Meetings in person
+### 2.6 Meeting mode (first)
 
-- Start in the app: the microphone records the room; live captions as in 2.3 if wanted.
+- Start in the app, or from the notification: the microphone records the room, with live translation as in 2.3 and
+  Speak the translation if wanted. The phone on the table hears everyone; it also hears a call playing from a laptop's
+  speakers in the same room.
 - After: the same minutes as the desktop (who said what, summary, decisions, action items with owners and dates) by
   Gemini 3.6 Flash, from the recording kept on the phone.
 - **Online meetings on the phone are not possible** (see 3); the app says to use Rflow for Windows for them.
@@ -153,14 +160,13 @@ counts as done.
 |---|---|---|
 | 0 | **Plan** (this document), README, CLAUDE.md, HANDOFF.md | The owner agrees with the plan |
 | 1 | **Setup:** Gradle project, the modules, CI (lint, tests, APK), Rflow's look in Compose, Settings, the Gemini key, a "Test key" button | The APK installs; a key is saved and tested |
-| 2 | **Rflow Keyboard:** keys, mic key, Gemini Transcribe + cleanup, typed at the cursor, the pill | Dictating into WhatsApp, Gmail and Teams types clean text |
-| 3 | **Translate and Rewrite:** the text-selection menu, Share, the Translate tab, voice commands on the keyboard | Select Japanese in any app → English in one tap |
-| 4 | **Conversation:** split screen, Live Translate, spoken translation, saved transcripts | A Japanese ⇄ English conversation across a table |
-| 5 | **Screen translator:** Quick Settings tile, capture, OCR, overlay | A Japanese app read in English in place |
-| 6 | **Captions for videos:** playback capture, the floating bar, Cost saver | A Japanese YouTube video captioned in English |
-| 7 | **Meetings in person:** record, captions, minutes | A room meeting gives the same minutes as on Windows |
-| 8 | **Parakeet on the phone:** download, check, use offline | Dictation with no network |
-| 9 | **Release 1.0:** updates from GitHub, the website's Android section; then the Play Store | `Rflow.apk` on GitHub; the site links it |
+| 2 | **Live translation:** the microphone, Gemini Live Translate, the captions screen, languages, Cost saver, a foreground service with its notification | Japanese said in the room is read in English on the phone as it's spoken |
+| 3 | **Speak the translation:** Gemini's voice played as it streams, other sound lowered | The same, heard in English through the speaker or earphones |
+| 4 | **What the phone plays:** playback capture (videos, podcasts), the floating caption bar over other apps | A Japanese YouTube video captioned in English |
+| 5 | **Meeting mode:** record the room, live translation during it, the meetings list, the minutes after (Gemini 3.6 Flash), share them | A room meeting gives the same minutes as on Windows |
+| 6 | **Conversation:** the two-way split screen | A Japanese ⇄ English conversation across a table |
+| 7 | **Release 1.0:** updates from GitHub, the website's Android section | `Rflow.apk` on GitHub; the site links it |
+| later | Rflow Keyboard, Translate and Rewrite, the Screen translator, Parakeet on the phone, the wake word, the Play Store | |
 
 ## 6. Open questions
 

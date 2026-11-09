@@ -26,7 +26,7 @@ Rules for AI coding assistants in this repository. Read `HANDOFF.md` first (wher
 
 ## Project
 
-**Rflow for Android**, the phone companion of Rflow for Windows (`karthi-ai-engineer/rflow-ai`): voice typing in every
+**Rflow for Android** (first live translation and Meeting mode; the rest later), the phone companion of Rflow for Windows (`karthi-ai-engineer/rflow-ai`): voice typing in every
 app (Rflow Keyboard), translate and rewrite any text, Conversation (two languages, one phone), the Screen translator,
 captions for videos, meetings in person. Kotlin + Jetpack Compose, Android 10+ (API 29). Open source under MIT; the Rflow
 name and logo are not covered. Anything added from elsewhere (a library, model, font) is listed in `NOTICES.txt`.
