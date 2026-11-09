@@ -1,0 +1,15 @@
+# Gradle and Android Studio
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+# Signing: never in git
+*.jks
+*.keystore
+keystore.properties
+# Models are downloaded by the app, never committed
+models/

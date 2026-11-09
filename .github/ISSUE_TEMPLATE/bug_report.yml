@@ -1,0 +1,35 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. 
+        2. 
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Rflow version
+      description: Settings, at the bottom (or the commit, if you run it from the source).
+  - type: input
+    id: android
+    attributes:
+      label: Phone and Android version
+      placeholder: e.g. Pixel 8, Android 16
+  - type: textarea
+    id: output
+    attributes:
+      label: What the log says
+      description: Settings → Report a problem copies the recent log. It can contain text you dictated, so remove anything private first.
+      render: text
