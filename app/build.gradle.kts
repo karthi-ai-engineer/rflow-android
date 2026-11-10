@@ -14,7 +14,7 @@ val signing = Properties().apply {
 fun secret(name: String, env: String): String? = signing.getProperty(name) ?: System.getenv(env)
 
 // One place for the version: versionCode follows from it (1.2.3 -> 10203), so an update is always "higher".
-val rflowVersion = "0.1.0"
+val rflowVersion = "0.9.0"
 val rflowCode = rflowVersion.split(".").map { it.toInt() }.let { (a, b, c) -> a * 10000 + b * 100 + c }
 
 android {

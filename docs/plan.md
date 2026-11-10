@@ -166,6 +166,9 @@ speak, Speak the translation, the Cost saver. Conversation is its two-way view:
 Each phase is an issue, a branch and a pull request (smaller parts stacked on it), tried on a real phone before it
 counts as done.
 
+**Status (2026-11-10):** phases 1-6 are built and tested on an emulator against a fake Gemini (0.9.0, the first
+test release); the owner's try on a real phone with a real key comes before 1.0.
+
 | # | Phase | Done when |
 |---|---|---|
 | 0 | **Plan** (this document), README, CLAUDE.md, HANDOFF.md | The owner agrees with the plan |
