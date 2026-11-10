@@ -13,3 +13,4 @@ captures/
 keystore.properties
 # Models are downloaded by the app, never committed
 models/
+.kotlin/
