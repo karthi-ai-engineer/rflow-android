@@ -94,6 +94,8 @@ speak, Speak the translation, the Cost saver. Conversation is its two-way view:
 
 ### 2.6 Meeting mode (first)
 
+- **In person:** the phone lies on the table and listens to the room (the owner's choice, 2026-11-10). Not phone, Zoom
+  or Teams calls on the phone (see 3).
 - Start in the app, or from the notification: the microphone records the room, with live translation as in 2.3 and
   Speak the translation if wanted. The phone on the table hears everyone; it also hears a call playing from a laptop's
   speakers in the same room.
@@ -148,8 +150,16 @@ speak, Speak the translation, the Cost saver. Conversation is its two-way view:
 - **Costs:** the same usage card as the desktop's Home (what was spent with Gemini this month), from the same rates.
 - **Tests:** unit tests for every stage (as the desktop's pipeline tests), Compose UI tests, and fakes for the
   microphone, Gemini and the clipboard. CI on GitHub Actions: lint, tests, a debug APK on every pull request.
-- **Releases:** a signed APK (`Rflow.apk`, with its SHA-256) on GitHub Releases for each `vX.Y.Z` tag; the app checks
-  for a newer release and offers it, as the desktop does. The signing key never goes into git.
+- **Releases:** a signed APK (`Rflow.apk`, with its SHA-256) on GitHub Releases for each `vX.Y.Z` tag. The signing key
+  never goes into git.
+- **Updates in the app, as on the desktop** (the owner's wish, 2026-11-10; built in phase 1 so every test build after
+  it updates this way): when the app opens it asks GitHub for the latest release; if it's newer than the installed one
+  (`versionCode`), it shows "Update to X.Y.Z". One tap downloads `Rflow.apk`, checks it against `Rflow.apk.sha256`,
+  and hands it to Android's installer (`PackageInstaller`). Android then shows its own "Update" prompt, one more tap,
+  and the app restarts on the new version with its settings and key kept. Android always asks that one confirmation
+  for apps not from the Play Store; the first time it also asks to allow installs from Rflow
+  (`REQUEST_INSTALL_PACKAGES`). An update installs only if it is signed with the same key as the installed app, so the
+  release key is backed up outside the laptop: losing it means everyone reinstalls.
 
 ## 5. Phases
 
@@ -159,13 +169,13 @@ counts as done.
 | # | Phase | Done when |
 |---|---|---|
 | 0 | **Plan** (this document), README, CLAUDE.md, HANDOFF.md | The owner agrees with the plan |
-| 1 | **Setup:** Gradle project, the modules, CI (lint, tests, APK), Rflow's look in Compose, Settings, the Gemini key, a "Test key" button | The APK installs; a key is saved and tested |
+| 1 | **Setup:** Gradle project, the modules, CI (lint, tests, a signed APK released from a tag), Rflow's look in Compose, Settings, the Gemini key, a "Test key" button, **updates in the app** | The APK installs; a key is saved and tested; a newer release is offered and installs with two taps |
 | 2 | **Live translation:** the microphone, Gemini Live Translate, the captions screen, languages, Cost saver, a foreground service with its notification | Japanese said in the room is read in English on the phone as it's spoken |
 | 3 | **Speak the translation:** Gemini's voice played as it streams, other sound lowered | The same, heard in English through the speaker or earphones |
 | 4 | **What the phone plays:** playback capture (videos, podcasts), the floating caption bar over other apps | A Japanese YouTube video captioned in English |
 | 5 | **Meeting mode:** record the room, live translation during it, the meetings list, the minutes after (Gemini 3.6 Flash), share them | A room meeting gives the same minutes as on Windows |
 | 6 | **Conversation:** the two-way split screen | A Japanese ⇄ English conversation across a table |
-| 7 | **Release 1.0:** updates from GitHub, the website's Android section | `Rflow.apk` on GitHub; the site links it |
+| 7 | **Release 1.0:** the website's Android section links the APK | `Rflow.apk` on GitHub; the site links it |
 | later | Rflow Keyboard, Translate and Rewrite, the Screen translator, Parakeet on the phone, the wake word, the Play Store | |
 
 ## 6. Open questions
