@@ -1,0 +1,12 @@
+Rflow for Android uses these, under their own licences:
+
+- Kotlin and kotlinx.coroutines (JetBrains), Apache License 2.0
+- AndroidX: Core, Activity, Lifecycle, Compose UI, Compose Material 3 (Google / The Android Open Source Project),
+  Apache License 2.0
+- OkHttp and Okio (Square), Apache License 2.0
+
+Tests only (not in the app): JUnit 4 (Eclipse Public License 1.0), OkHttp MockWebServer (Apache License 2.0),
+org.json (Public Domain).
+
+The Rflow name and logo are not covered by the MIT licence of this repository.
+Translation, transcripts and minutes are made by Google Gemini with the user's own API key, under Google's terms.

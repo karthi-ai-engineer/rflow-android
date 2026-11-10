@@ -3,6 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Live translation and Meeting mode: the microphone, in a foreground service with its notification. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- A meeting keeps recording with the screen off. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- The floating caption bar over a video app. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <!-- Updates from GitHub: Android still asks the user to confirm every install. -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
@@ -28,6 +38,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".live.LiveService"
+            android:exported="false"
+            android:foregroundServiceType="microphone|mediaProjection" />
 
         <receiver
             android:name=".update.InstallReceiver"

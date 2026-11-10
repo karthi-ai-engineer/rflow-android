@@ -7,7 +7,15 @@ import io.github.karthiaiengineer.rflow.ai.KeyCheck
 import io.github.karthiaiengineer.rflow.core.Release
 import io.github.karthiaiengineer.rflow.core.ThemeChoice
 import io.github.karthiaiengineer.rflow.core.Version
+import io.github.karthiaiengineer.rflow.live.LiveHub
+import io.github.karthiaiengineer.rflow.live.LiveService
+import io.github.karthiaiengineer.rflow.live.Mode
+import io.github.karthiaiengineer.rflow.live.SessionSpec
+import io.github.karthiaiengineer.rflow.live.Source
+import io.github.karthiaiengineer.rflow.meeting.Meeting
+import io.github.karthiaiengineer.rflow.ui.Prefs
 import io.github.karthiaiengineer.rflow.update.Installer
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,6 +50,63 @@ class MainModel(app: Application) : AndroidViewModel(app) {
     private val _update = MutableStateFlow<UpdateState>(UpdateState.Idle)
     val update: StateFlow<UpdateState> = _update
     private var updating: Job? = null
+
+    private val settings get() = rflow.settings
+    private val _prefs = MutableStateFlow(readPrefs())
+    val prefs: StateFlow<Prefs> = _prefs
+    private fun readPrefs() = Prefs(settings.target, settings.mine, settings.theirs, settings.speak, settings.saver)
+
+    fun setTarget(code: String) { settings.target = code; _prefs.value = readPrefs() }
+    fun setMine(code: String) { settings.mine = code; _prefs.value = readPrefs() }
+    fun setTheirs(code: String) { settings.theirs = code; _prefs.value = readPrefs() }
+    fun setSpeak(on: Boolean) { settings.speak = on; _prefs.value = readPrefs() }
+    fun setSaver(on: Boolean) { settings.saver = on; _prefs.value = readPrefs() }
+
+    private val _testServer = MutableStateFlow(settings.testServer)
+    val testServer: StateFlow<String> = _testServer
+    fun setTestServer(url: String) { settings.testServer = url; _testServer.value = settings.testServer }
+
+    /** The session to start, from the choices on screen. */
+    fun spec(mode: Mode, source: Source = Source.ROOM): SessionSpec {
+        val p = _prefs.value
+        return when (mode) {
+            Mode.CONVERSATION -> SessionSpec(mode, Source.ROOM, target = p.mine, theirs = p.theirs, speak = p.speak, saver = p.saver)
+            Mode.MEETING -> SessionSpec(mode, Source.ROOM, target = p.target, speak = p.speak, saver = false)  // the recording is whole
+            Mode.LIVE -> SessionSpec(mode, source, target = p.target, speak = p.speak, saver = p.saver)
+        }
+    }
+
+    fun stopSession() = LiveService.stop(getApplication())
+
+    fun clearConversation() = LiveHub.edit { if (it.running) it else it.copy(lines = emptyList(), spec = null, problem = "") }
+
+    // -- meetings
+    val meetingStates get() = rflow.meetings.states
+    private val _meetings = MutableStateFlow<List<Meeting>>(emptyList())
+    val meetings: StateFlow<List<Meeting>> = _meetings
+
+    init {
+        viewModelScope.launch {
+            rflow.meetings.version.collectLatest { refreshMeetings() }
+        }
+        viewModelScope.launch {
+            var was = false
+            LiveHub.ui.collectLatest { ui ->
+                if (was && !ui.running) refreshMeetings()  // a meeting just ended: it's in the list now
+                was = ui.running
+            }
+        }
+    }
+
+    fun refreshMeetings() {
+        viewModelScope.launch(kotlinx.coroutines.Dispatchers.IO) { _meetings.value = rflow.meetings.list() }
+    }
+
+    fun meeting(id: String) = _meetings.value.firstOrNull { it.id == id } ?: rflow.meetings.get(id)
+    fun meetingLive(id: String) = rflow.meetings.liveLines(id)
+    fun writeMinutes(id: String) { rflow.meetings.get(id)?.let { rflow.meetings.writeMinutes(it.dir) } }
+    fun deleteMeeting(id: String) = rflow.meetings.delete(id)
+    fun minutesText(id: String) = rflow.meetings.markdown(id)
 
     fun setTheme(choice: ThemeChoice) {
         rflow.settings.theme = choice
